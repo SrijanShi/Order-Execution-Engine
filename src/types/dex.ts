@@ -1,5 +1,7 @@
 import { DexType } from './common';
 
+export { DexType };
+
 export interface DexQuote {
   dex: DexType;
   tokenIn: string;
