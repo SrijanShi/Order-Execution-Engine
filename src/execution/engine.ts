@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Order } from '../types/order';
 import { DexRouter } from '../router/dex-router';
 import { logger } from '../utils/logger';
+import { retry, DEFAULT_RETRY_CONFIG } from '../utils/retry';
+import { ExecutionErrorHandler, globalErrorHandler } from './error-handler';
 import {
   ExecutionState,
   ExecutionContext,
@@ -198,18 +200,39 @@ export class ExecutionEngine extends EventEmitter {
 
       const { tokenIn, tokenOut, amount } = context.order;
 
-      // Use timeout for routing
-      const routingPromise = this.dexRouter.routeOrder(tokenIn, tokenOut, amount, 50);
-      const routeResult = await Promise.race([
-        routingPromise,
-        this.delay(this.config.routingTimeout),
-      ]).catch(() => {
-        throw new Error(`Routing timeout after ${this.config.routingTimeout}ms`);
-      });
+      // Use retry with exponential backoff for routing
+      const retryResult = await retry(
+        async () => {
+          const routingPromise = this.dexRouter.routeOrder(tokenIn, tokenOut, amount, 50);
+          const routeResult = await Promise.race([
+            routingPromise,
+            this.delay(this.config.routingTimeout),
+          ]).catch(() => {
+            throw new Error(`Routing timeout after ${this.config.routingTimeout}ms`);
+          });
 
-      if (!routeResult) {
-        throw new Error('No routes found');
+          if (!routeResult) {
+            throw new Error('No routes found');
+          }
+
+          return routeResult;
+        },
+        'order-routing',
+        DEFAULT_RETRY_CONFIG,
+      );
+
+      if (!retryResult.success) {
+        const error = retryResult.error!;
+        globalErrorHandler.handleDexApiError(error, context.orderId, 'routing');
+        return {
+          success: false,
+          newState: ExecutionState.FAILED,
+          error: `Routing failed after ${retryResult.attempts} attempts: ${error.message}`,
+          timestamp: new Date(),
+        };
       }
+
+      const routeResult = retryResult.result;
 
       // Select best quote
       const quoteSelection = this.selectBestQuote(routeResult as any);

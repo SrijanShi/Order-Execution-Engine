@@ -318,6 +318,9 @@ describe('API Server - REST Endpoints', () => {
         });
       }
 
+      // Wait a bit for async execution to register
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       // Retrieve with limit
       const response = await app.inject({
         method: 'GET',
