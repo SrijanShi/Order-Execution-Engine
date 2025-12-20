@@ -167,33 +167,55 @@ See [TESTING.md](TESTING.md) for more information.
 
 ## 🐳 Deployment
 
-### Docker
+### Quick Start with Docker
 
 ```bash
+# Build image
 docker build -t dex-order-engine:latest .
-docker run -d -p 3000:3000 dex-order-engine:latest
-```
 
-### Docker Compose
-
-```bash
+# Run with Docker Compose (includes PostgreSQL & Redis)
 docker-compose up -d
+
+# Verify it's running
+curl http://localhost:3000/health
 ```
+
+### Cloud Deployment
+
+- **[Railway.app](DEPLOYMENT.md#railwayapp-deployment)** - Free PostgreSQL tier, quick deployment
+- **[Render.com](DEPLOYMENT.md#rendercom-deployment)** - Free tier with auto-pause
+- **[Kubernetes](KUBERNETES.md)** - Enterprise-grade orchestration
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed guides.
+
+## 🐋 Docker
+
+See [DOCKER.md](DOCKER.md) for:
+- Dockerfile explanation
+- Image building and optimization
+- Container management
+- Security best practices
+- Production configurations
 
 ## 📊 Monitoring
 
 Health check: `curl http://localhost:3000/health`
 
-See logs in `/logs` directory.
+Metrics: `curl http://localhost:3000/metrics`
 
-## 📖 Documentation
+Logs in `/logs` directory with JSON format.
 
-- [Architecture](ARCHITECTURE.md) - System design
-- [API Reference](API.md) - API endpoints
-- [Configuration](CONFIG.md) - Environment setup
-- [Testing Guide](TESTING.md) - Test execution
+## 📖 Complete Documentation
+
+- [Deployment Guide](DEPLOYMENT.md) - Railway, Render, local setup
+- [Docker Guide](DOCKER.md) - Building and running containers
+- [Kubernetes Guide](KUBERNETES.md) - K8s deployment
+- [Architecture](ARCHITECTURE.md) - System design and components
+- [API Reference](API.md) - All endpoints with examples
+- [Configuration](CONFIG.md) - Environment variables
+- [Testing Guide](TESTING.md) - Running and writing tests
 - [Postman Collection](Postman_Collection.json) - API testing
 
 ---
 
-**Status:** Production Ready ✅ | **Tests:** 348 Passing
+**Status:** Production Ready ✅ | **Tests:** 348 Passing | **Docker:** Multi-stage optimized

@@ -1,28 +1,94 @@
+# Dependencies
 node_modules
 npm-debug.log
+yarn-error.log
+.pnp
+.pnp.js
+
+# Build outputs
 dist
+build
+.next
+out
+
+# Environment files (handled separately at runtime)
 .env
 .env.local
 .env.*.local
+.env.development
+.env.staging
+.env.production
+
+# Version control
 .git
 .gitignore
-.eslintignore
-.eslintrc*
-.prettierignore
-.prettierrc*
+.gitattributes
+
+# Code editors
 .vscode
 .idea
 *.swp
 *.swo
 *~
 .DS_Store
-coverage
-.nyc_output
+Thumbs.db
+
+# Linting and testing
+.eslintignore
+.eslintrc*
+.prettierignore
+.prettierrc*
 jest.config.js
 tsconfig.json
+coverage
+.nyc_output
+.mocharc*
+
+# Documentation
 README.md
 CHANGELOG.md
 LICENSE
+ARCHITECTURE.md
+API.md
+TESTING.md
+CONFIG.md
+DEPLOYMENT.md
+STEP_12_13_COMPLETION.md
+
+# Docker and CI/CD
 docker-compose.yml
+docker-compose.*.yml
 .dockerignore
 Dockerfile
+.github
+.gitlab-ci.yml
+.circleci
+
+# Package manager lock files (optional, can be included for reproducibility)
+# Uncomment if you want to exclude lock files:
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Logs
+logs
+*.log
+lerna-debug.log*
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+*.sublime-workspace
+*.sublime-project
+
+# IDE specific files
+.vscode/
+.idea/
+.fleet/
+
+# Testing
+__tests__
+*.test.ts
+*.spec.ts
+Postman_Collection.json
