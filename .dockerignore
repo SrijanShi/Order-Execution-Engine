@@ -39,7 +39,6 @@ Thumbs.db
 .prettierignore
 .prettierrc*
 jest.config.js
-tsconfig.json
 coverage
 .nyc_output
 .mocharc*
