@@ -47,8 +47,7 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 
-# Copy configuration files
-COPY .env .env.example ./
+# Copy database migration files
 COPY src/persistence/migration ./migration
 
 # Health check
