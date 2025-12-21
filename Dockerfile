@@ -26,7 +26,10 @@ RUN npm ci && \
 COPY . .
 
 # Build TypeScript
-RUN npm run build
+RUN echo "Current directory:" && pwd && \
+    echo "TypeScript version:" && npx tsc --version && \
+    echo "Files in src:" && ls -la src/ && \
+    npm run build
 
 # Remove devDependencies to keep image small
 RUN npm prune --omit=dev && \
