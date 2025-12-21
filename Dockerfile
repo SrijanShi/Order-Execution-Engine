@@ -18,8 +18,8 @@ RUN apk add --no-cache python3 make g++
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production && \
+# Install all dependencies (including devDependencies for build)
+RUN npm ci && \
     npm cache clean --force
 
 # Copy source code
@@ -27,6 +27,10 @@ COPY . .
 
 # Build TypeScript
 RUN npm run build
+
+# Remove devDependencies to keep image small
+RUN npm prune --omit=dev && \
+    npm cache clean --force
 
 # ============================================
 # Stage 2: Runtime Stage
