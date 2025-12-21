@@ -3,8 +3,7 @@ primary_region = "sjc"
 console_command = "/bin/sh"
 
 [build]
-  image = "dex-order-engine:latest"
-  dockerfile = "./Dockerfile"
+  dockerfile = "Dockerfile"
 
 [env]
   NODE_ENV = "production"
@@ -22,7 +21,6 @@ console_command = "/bin/sh"
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
-  processes = ["app"]
 
   [http_service.concurrency]
     type = "connections"
@@ -37,22 +35,3 @@ console_command = "/bin/sh"
     protocol = "http"
     timeout = "5s"
     tls_skip_verify = false
-
-[[services]]
-  protocol = "tcp"
-  internal_port = 3000
-  ports = [80, 443]
-
-  [services.concurrency]
-    type = "connections"
-    hard_limit = 100
-    soft_limit = 80
-
-[checks]
-  [checks.status]
-    type = "http"
-    interval = "30s"
-    timeout = "10s"
-    grace_period = "10s"
-    method = "GET"
-    path = "/api/health"
