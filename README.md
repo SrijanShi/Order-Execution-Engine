@@ -180,13 +180,42 @@ docker-compose up -d
 curl http://localhost:3000/health
 ```
 
-### Cloud Deployment
+### 🚀 Fly.io Deployment (Production - RECOMMENDED)
 
-- **[Railway.app](DEPLOYMENT.md#railwayapp-deployment)** - Free PostgreSQL tier, quick deployment
+**Your app is ready for Fly.io!** All configuration files are prepared.
+
+```bash
+# 1. Install Fly CLI
+brew install flyctl
+
+# 2. Authenticate
+flyctl auth login
+
+# 3. Launch on Fly.io (creates PostgreSQL + Redis automatically)
+flyctl launch
+
+# 4. Deploy
+flyctl deploy
+
+# 5. Your app is live at: https://dex-order-engine.fly.dev
+```
+
+**Cost:** $0/month (free tier includes compute, PostgreSQL, and Redis)
+
+See [FLY_DEPLOYMENT.md](FLY_DEPLOYMENT.md) for detailed guide.
+
+### Cloud Deployment (Other Options)
+
+> ⚠️ **NOT Vercel** - Vercel doesn't support WebSockets or long-running processes.
+
+**Other platforms:**
+- **[Railway.app](DEPLOYMENT.md#railwayapp-deployment)** - 5 min setup, free PostgreSQL
 - **[Render.com](DEPLOYMENT.md#rendercom-deployment)** - Free tier with auto-pause
+- **[AWS](DEPLOYMENT.md#aws)** - Free tier with EC2 + RDS
+- **[GCP](DEPLOYMENT.md#gcp)** - Free tier with Compute Engine + Cloud SQL
 - **[Kubernetes](KUBERNETES.md)** - Enterprise-grade orchestration
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed guides.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step guides or [DEPLOYMENT_STRATEGY.md](DEPLOYMENT_STRATEGY.md) for comparison.
 
 ## 🐋 Docker
 

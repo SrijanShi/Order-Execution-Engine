@@ -1,0 +1,58 @@
+app = "dex-order-engine"
+primary_region = "sjc"
+console_command = "/bin/sh"
+
+[build]
+  image = "dex-order-engine:latest"
+  dockerfile = "./Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+  LOG_LEVEL = "info"
+  SLIPPAGE_TOLERANCE = "0.5"
+  MAX_RETRIES = "3"
+  QUEUE_CONCURRENCY = "10"
+  CACHE_TTL = "3600"
+  WEBSOCKET_ENABLED = "true"
+
+[http_service]
+  internal_port = 3000
+  force_https = false
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 100
+    soft_limit = 80
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    protocol = "http"
+    timeout = "5s"
+    tls_skip_verify = false
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 3000
+  ports = [80, 443]
+
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 100
+    soft_limit = 80
+
+[checks]
+  [checks.status]
+    type = "http"
+    interval = "30s"
+    timeout = "10s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/api/health"
