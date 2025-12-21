@@ -26,16 +26,20 @@ function createTestOrder(overrides?: Partial<Order>): Order {
 // Mock DexRouter
 class MockDexRouter implements Partial<DexRouter> {
   async routeOrder(tokenIn: string, tokenOut: string, amount: number, slippage: number): Promise<any> {
-    return {
-      quotes: [
-        {
-          dexAddress: '0x' + '1'.repeat(40),
-          amountOut: amount * 1.01, // 1% better rate
-          priceImpact: 0.001,
-        },
-      ],
-      dexName: 'raydium',
+    const dexQuote = {
+      dex: 'raydium',
+      amountIn: amount,
+      amountOut: amount * 1.01, // 1% better rate
+      price: 1.01,
       priceImpact: 0.001,
+      slippage: slippage,
+      timestamp: new Date(),
+    };
+
+    return {
+      bestQuote: dexQuote,
+      allQuotes: [dexQuote],
+      source: 'LIVE',
     };
   }
 }
@@ -136,13 +140,13 @@ describe('ExecutionEngine', () => {
     test('should select best quote from multiple routes', async () => {
       const order = createTestOrder();
       mockRouter.routeOrder = async () => ({
-        quotes: [
-          { dexAddress: '0x1', amountOut: 1000, priceImpact: 0.01 },
-          { dexAddress: '0x2', amountOut: 1050, priceImpact: 0.015 }, // Best
-          { dexAddress: '0x3', amountOut: 1030, priceImpact: 0.012 },
+        bestQuote: { dex: 'raydium', amountOut: 1050, priceImpact: 0.015, price: 1.05, amountIn: 1000, slippage: 50, timestamp: new Date() }, // Best
+        allQuotes: [
+          { dex: 'raydium', amountOut: 1000, priceImpact: 0.01, price: 1.0, amountIn: 1000, slippage: 50, timestamp: new Date() },
+          { dex: 'meteora', amountOut: 1050, priceImpact: 0.015, price: 1.05, amountIn: 1000, slippage: 50, timestamp: new Date() },
+          { dex: 'unknown', amountOut: 1030, priceImpact: 0.012, price: 1.03, amountIn: 1000, slippage: 50, timestamp: new Date() },
         ],
-        dexName: 'raydium',
-        priceImpact: 0.015,
+        source: 'LIVE',
       });
 
       const result = await engine.executeOrder(order);

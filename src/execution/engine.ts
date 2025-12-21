@@ -464,11 +464,16 @@ export class ExecutionEngine extends EventEmitter {
    * Select best quote based on price
    */
   private selectBestQuote(routeResult: any): QuoteSelection {
-    // For now, return the first quote with highest output
-    const quote = routeResult.quotes[0];
-    const dexName = routeResult.dexName || 'unknown';
-    const score = quote.amountOut;
-    const priceImpact = routeResult.priceImpact || 0;
+    // routeResult comes from DexRouter.routeOrder() which returns { bestQuote, allQuotes, source }
+    const quote = routeResult.bestQuote;
+    
+    if (!quote) {
+      throw new Error('No valid quote available from routing');
+    }
+    
+    const dexName = quote.dex || 'unknown';
+    const score = quote.amountOut || 0;
+    const priceImpact = quote.priceImpact || 0;
 
     return { quote, dexName, score, priceImpact };
   }
