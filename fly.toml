@@ -1,37 +1,24 @@
-app = "dex-order-engine"
-primary_region = "sjc"
-console_command = "/bin/sh"
+# fly.toml app configuration file generated for dex-order-engine on 2025-12-21T19:13:24+05:30
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'dex-order-engine'
+primary_region = 'bom'
 
 [build]
   dockerfile = "Dockerfile"
 
-[env]
-  NODE_ENV = "production"
-  PORT = "3000"
-  LOG_LEVEL = "info"
-  SLIPPAGE_TOLERANCE = "0.5"
-  MAX_RETRIES = "3"
-  QUEUE_CONCURRENCY = "10"
-  CACHE_TTL = "3600"
-  WEBSOCKET_ENABLED = "true"
-
 [http_service]
   internal_port = 3000
-  force_https = false
-  auto_stop_machines = true
+  force_https = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 1
+  min_machines_running = 0
+  processes = ['app']
 
-  [http_service.concurrency]
-    type = "connections"
-    hard_limit = 100
-    soft_limit = 80
-
-  [[http_service.checks]]
-    grace_period = "10s"
-    interval = "30s"
-    method = "GET"
-    path = "/api/health"
-    protocol = "http"
-    timeout = "5s"
-    tls_skip_verify = false
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024
